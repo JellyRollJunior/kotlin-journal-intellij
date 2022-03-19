@@ -1,11 +1,12 @@
 
 fun main() {
-    val squareCabin = SquareCabin(6)
+    val squareCabin = SquareCabin(6, 50.0)
     with (squareCabin) {
         println("\nSquare Cabin\n============")
         println("Capacity: $capacity")
         println("Material: $buildingMaterial")
         println("Has room? ${hasRoom()}")
+        println("Floor area: ${floorArea()}")
     }
 
     val roundHut = RoundHut(3)
@@ -26,17 +27,19 @@ fun main() {
 }
 
 abstract class Dwelling(private var residents: Int) {
-
     abstract val buildingMaterial: String
     abstract val capacity: Int
 
     fun hasRoom(): Boolean {
         return residents < capacity
     }
+
+    abstract fun floorArea(): Double
 }
 
 // Do not declare residents as val, because you are reusing a property already declared in the parent class Dwelling.
-class SquareCabin(residents: Int) : Dwelling(residents) {
+// Declare the property as a val because the length of a building doesn't change.
+class SquareCabin(residents: Int, val length: Double) : Dwelling(residents) {
     /*
      * When you declare abstract functions and variables, it is like a promise that you will give them values and
      * implementations later. For a variable, it means that any subclass of that abstract class needs to give it a
@@ -45,11 +48,18 @@ class SquareCabin(residents: Int) : Dwelling(residents) {
     override val buildingMaterial = "wood"
     override val capacity = 6
 
+    override fun floorArea(): Double {
+        return length * length
+    }
 }
 
-open class RoundHut(residents: Int) : Dwelling(residents) {
+open class RoundHut(residents: Int, val radius: Double) : Dwelling(residents) {
     override val buildingMaterial = "straw"
     override val capacity = 4
+
+    override fun floorArea(): Double {
+        return kotlin.math.PI * radius
+    }
 }
 
 /*
