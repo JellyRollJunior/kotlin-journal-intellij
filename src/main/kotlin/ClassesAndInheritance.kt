@@ -1,3 +1,5 @@
+import java.lang.Math.PI
+import kotlin.math.sqrt
 
 fun main() {
     val squareCabin = SquareCabin(6, 50.0)
@@ -9,20 +11,28 @@ fun main() {
         println("Floor area: ${floorArea()}")
     }
 
-    val roundHut = RoundHut(3)
+    val roundHut = RoundHut(3, 10.0)
     with (roundHut) {
         println("\nRound Hut\n=========")
         println("Material: $buildingMaterial")
         println("Capacity: $capacity")
         println("Has room? ${hasRoom()}")
+        println("Floor area: ${floorArea()}")
+        println("Has room? ${hasRoom()}")
+        getRoom()
+        println("Has room? ${hasRoom()}")
+        getRoom()
+        println("Carpet size: ${calculateMaxCarpetSize()}")
     }
 
-    val roundTower = RoundTower(4)
+    val roundTower = RoundTower(4, 15.5)
     with (roundTower) {
         println("\nRound Tower\n==========")
         println("Material: $buildingMaterial")
         println("Capacity: $capacity")
         println("Has room? ${hasRoom()}")
+        println("Floor area: ${floorArea()}")
+        println("Carpet size: ${calculateMaxCarpetSize()}")
     }
 }
 
@@ -32,6 +42,15 @@ abstract class Dwelling(private var residents: Int) {
 
     fun hasRoom(): Boolean {
         return residents < capacity
+    }
+
+    fun getRoom() {
+        if (residents < capacity) {
+            residents++
+            println("You got a room!")
+        } else {
+            println("Sorry, at capacity and no rooms left.")
+        }
     }
 
     abstract fun floorArea(): Double
@@ -58,7 +77,12 @@ open class RoundHut(residents: Int, val radius: Double) : Dwelling(residents) {
     override val capacity = 4
 
     override fun floorArea(): Double {
-        return kotlin.math.PI * radius
+        return PI * radius * radius
+    }
+
+    fun calculateMaxCarpetSize(): Double {
+        val diameter = radius * 2
+        return sqrt((diameter * diameter) / 2)
     }
 }
 
@@ -72,9 +96,13 @@ open class RoundHut(residents: Int, val radius: Double) : Dwelling(residents) {
  * Then, when no value for floors is passed into the constructor, the default value can be used to
  * create the object instance.
  */
-class RoundTower(
-    residents: Int,
-    val floor: Int = 2) : RoundHut(residents) {
+class RoundTower(residents: Int, radius: Double,
+    val floors: Int = 2) : RoundHut(residents, radius) {
+
     override val buildingMaterial = "stone"
-    override val capacity = 4 * floor
+    override val capacity = 4 * floors
+
+    override fun floorArea(): Double {
+        return super.floorArea() * floors
+    }
 }
